@@ -25,7 +25,7 @@ export async function registerController(request: FastifyRequest, reply: Fastify
             return reply.status(409).send({ error: error.message });
         }
 
-       return reply.status(500).send({ error: 'Internal Server Error' });
+        throw error; // Re-throw unexpected errors
    }
 
     return reply.status(201).send({
