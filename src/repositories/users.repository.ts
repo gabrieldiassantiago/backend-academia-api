@@ -12,7 +12,7 @@ export class PrismaUsersRepository {
                 password,
             },
         });
-
+        
         return user;
     }
 }
