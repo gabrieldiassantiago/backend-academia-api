@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String   @id @default(uuid())
+  name    String
+  email    String   @unique
+  password String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  checkIns CheckIn[]
+  @@map("users")
+}
+
+model CheckIn {
+  id       String   @id @default(uuid())
+  created_at DateTime @default(now())
+  validated_at DateTime?
+  user_Id   String
+  gym_Id   String
+  gym       Gym     @relation(fields: [gym_Id], references: [id])
+  user     User     @relation(fields: [user_Id], references: [id])
+  @@map("check_ins")
+
+}
+
+model Gym {
+  id    String   @id @default(uuid())
+  title String
+  description String?
+  phone String?
+  latitude Decimal
+  longitude Decimal
+  CheckIns CheckIn[]
+  @@map("gyms")
+}
