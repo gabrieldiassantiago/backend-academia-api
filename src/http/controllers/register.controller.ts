@@ -1,8 +1,8 @@
 import z from "zod";
-import { prisma } from "../../lib/prima";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { hash } from "bcryptjs";
-import { registerService } from "../../services/register.service";
+import { UserAlreadyExistsError } from "../../errors/user-already-exists";
+import { RegisterService } from "../../services/register.service";
+import { PrismaUsersRepository } from "../../repositories/prisma-users-repository";
 
 export async function registerController(request: FastifyRequest, reply: FastifyReply) {
     
@@ -15,12 +15,20 @@ export async function registerController(request: FastifyRequest, reply: Fastify
    const { name, email, password } = registerBodySchema.parse(request.body);
 
    try {
-    await registerService({
+    const registerUseCase = new RegisterService(new PrismaUsersRepository());
+        await registerUseCase.execute({
         name, email, password
     });
    } catch (error) {
+    
+        if (error instanceof UserAlreadyExistsError) {
+            return reply.status(409).send({ error: error.message });
+        }
+
        return reply.status(500).send({ error: 'Internal Server Error' });
    }
 
-   return reply.status(201).send();
+    return reply.status(201).send({
+        'message': 'Usuário criado com sucesso',
+    });
 }
