@@ -29,7 +29,9 @@ export class RegisterService {
             password: hashedPassword,
         });
 
-        return user;
+        return {
+            user
+        }
     }
 
 }
