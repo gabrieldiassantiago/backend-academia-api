@@ -15,6 +15,7 @@ export async function registerController(request: FastifyRequest, reply: Fastify
    const { name, email, password } = registerBodySchema.parse(request.body);
 
    try {
+    
     const registerUseCase = new RegisterService(new PrismaUsersRepository());
         await registerUseCase.execute({
         name, email, password
@@ -31,5 +32,5 @@ export async function registerController(request: FastifyRequest, reply: Fastify
     return reply.status(201).send({
         'message': 'Usuário criado com sucesso',
     });
-    
+
 }
