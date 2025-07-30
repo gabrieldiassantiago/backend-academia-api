@@ -1,34 +1,29 @@
 import {expect, test, describe, it} from 'vitest';
 import { RegisterService } from './register.service';
 import { compare } from 'bcryptjs';
+import { InMemoryUsersRepository } from '../repositories/in-memory/in-memory-users-repository';
+import { register } from 'module';
 
 describe('Register Service', () => {
+    
     it('Deve criar um usuário com sucesso', async () => {
 
-      const registerCase = new RegisterService({
-        findByEmail: async (_) => {
-            return null; 
-        },
+    const inMemoryUsers = new InMemoryUsersRepository();
+    const registerUseCase = new RegisterService(inMemoryUsers);
 
-        create: async (data) => {
-            return {
-                id: 'user-id',
-                name: data.name,
-                email: data.email,
-                password: data.password,
-                created_at: new Date(),
-                updated_at: new Date()
-            }
-        }
-       
-      })
+    const email = 'john.doe22@example.com';
 
-        const { user } = await registerCase.execute({
-            name: 'John Doe',
-            email: 'john.doe2@example.com',
-            password: 'password123',
-        })
-        const isPasswordCorrectHash = await compare('password123', user.password);
-        expect(isPasswordCorrectHash).toBe(true);
+    const {user} = await registerUseCase.execute({
+        name: 'John Doe',
+        email: email,
+        password: 'password123',
+    })
+
+
+    const isPasswordCorrectHash = await 
+    compare('password123', user.password);
+
+    expect(isPasswordCorrectHash).toBe(true);
+
     })
 })

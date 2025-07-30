@@ -25,10 +25,11 @@ export async function registerController(request: FastifyRequest, reply: Fastify
             return reply.status(409).send({ error: error.message });
         }
 
-        throw error; // Re-throw unexpected errors
+        throw error; 
    }
 
     return reply.status(201).send({
         'message': 'Usuário criado com sucesso',
     });
+    
 }
