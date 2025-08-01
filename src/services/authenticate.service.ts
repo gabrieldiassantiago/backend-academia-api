@@ -7,7 +7,15 @@ interface AuthenticateServiceRequest {
     password: string;
 }
 
-type AuthenticateServiceResponse = void
+interface AuthenticateServiceResponse {
+    user: {
+        id: string;
+        name: string;
+        email: string;
+        password: string;
+        created_at: Date;
+    }
+}
 
 export class AuthenticateService {
     constructor(
@@ -17,6 +25,7 @@ export class AuthenticateService {
     async execute({
         email, password
     }: AuthenticateServiceRequest): Promise<AuthenticateServiceResponse> {
+
         const user = await this.usersRepository.findByEmail(email);
 
         if (!user) {
@@ -28,6 +37,10 @@ export class AuthenticateService {
         if (!doesPasswordMatch) {
             throw new InvalidCredentialsError();
         }
+
+        return {
+            user
+        };
     }
 
 
